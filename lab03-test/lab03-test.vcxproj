@@ -129,9 +129,11 @@
   <ItemGroup>
     <ClCompile Include="histogram.cpp" />
     <ClCompile Include="lab03-test.cpp" />
+    <ClCompile Include="show_svg_histogram.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="histogram.h" />
+    <ClInclude Include="show_svg_histogram.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
