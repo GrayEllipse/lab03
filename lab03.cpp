@@ -25,20 +25,38 @@ void svg_rect(double x, double y, double width, double height, string stroke, st
     cout << "<rect x=' " << x << "' y=' " << y << "' width=' " << width << "' height=' " << height << "' stroke=' " << stroke << "' fill='" << fill << "'/>" << '\n';
 }
 
-void show_histogram_svg(const vector<size_t>& bins) {
-    const auto IMAGE_WIDTH = 800;
-    const auto IMAGE_HEIGHT = 400;
+size_t find_max_count(const vector<size_t>& bins, const size_t bin_count) {
+    size_t max_count = 0;
+    for (size_t count : bins) {
+        if (count > max_count) {
+            max_count = count;
+        }
+    }
+    return max_count;
+}
+
+void show_histogram_svg(const vector<size_t>& bins, const size_t& bin_count) {
+    const auto IMAGE_WIDTH = 810;
+    const auto IMAGE_HEIGHT = 300;
     const auto TEXT_LEFT = 20;
     const auto TEXT_BASELINE = 20;
     const auto TEXT_WIDTH = 50;
     const auto BIN_HEIGHT = 30;
     const auto BLOCK_WIDTH = 10;
+    const size_t MAX_NUMBER_OF_CHAR = 80;
+    const size_t MAX_ASTERISK = MAX_NUMBER_OF_CHAR - 4;
 
     svg_begin(IMAGE_WIDTH, IMAGE_HEIGHT);
 
     double top = 0;
+    double scaling_factor = 1.0;
+    size_t max_count = find_max_count(bins, bin_count);
+    if (max_count > MAX_ASTERISK)
+        scaling_factor = MAX_ASTERISK / static_cast<double>(max_count);
+    size_t scaled_bin;
     for (size_t bin : bins) {
-        const double bin_width = BLOCK_WIDTH * bin;
+        scaled_bin = static_cast<size_t>(scaling_factor * bin);
+        const double bin_width = BLOCK_WIDTH * scaled_bin;
         svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));
         svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT, "red", "#ffeeee");
         top += BIN_HEIGHT;
@@ -82,16 +100,6 @@ vector<size_t> make_histogram(const vector<double>& numbers, const size_t bin_co
     return bins;
 }
 
-size_t find_max_count(const vector<size_t>& bins, const size_t bin_count) {
-    size_t max_count = 0;
-    for (size_t count : bins) {
-        if (count > max_count) {
-            max_count = count;
-        }
-    }
-    return max_count;
-}
-
 void show_histogram_text(const vector<size_t>& bins, const size_t bin_count) {
     const size_t SCREEN_WIDTH = 80;
     const size_t MAX_ASTERISK = SCREEN_WIDTH - 4;
@@ -123,5 +131,5 @@ int main()
     cerr << "Enter bin count: ";
     cin >> bin_count;
     vector<size_t> bins = make_histogram(numbers, bin_count);
-    show_histogram_svg(bins);
+    show_histogram_svg(bins, bin_count);
 }
